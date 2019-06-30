@@ -214,36 +214,59 @@ function MastodonPostStatus( status ) {
 	});
 }
 
-function TASK_Perform_Twitter_Self_Timeline_Sync() {
-	return new Promise( async function( resolve , reject ) {
-		try {
-			const db = new JFODB( "twitter_" + Personal.twitter.username + "_mastodon_sync" );
+// function TASK_Perform_Twitter_Self_Timeline_Sync() {
+// 	return new Promise( async function( resolve , reject ) {
+// 		try {
+// 			const db = new JFODB( "twitter_" + Personal.twitter.username + "_mastodon_sync" );
 
-			mastodon = new Masto( Personal.mastodon.creds );
-			await sleep( 2000 );
-			twitter = new Twitter( Personal.twitter.creds );
+// 			mastodon = new Masto( Personal.mastodon.creds );
+// 			await sleep( 2000 );
+// 			twitter = new Twitter( Personal.twitter.creds );
 
-			db.self[ "twitter_self_timeline_latest" ] = [];
-			let latest = await TwitterGetLatest( Personal.twitter.username , db.self[ "twitter_self_latest_id" ] || false );
-			if ( !latest ) { console.log( "Nothing New" ); process.exit( 1 ); }
-			if ( latest.length < 1 ) { console.log( "Nothing New" ); process.exit( 1 ); }
+// 			db.self[ "twitter_self_timeline_latest" ] = [];
+// 			let latest = await TwitterGetLatest( Personal.twitter.username , db.self[ "twitter_self_latest_id" ] || false );
+// 			if ( !latest ) { console.log( "Nothing New" ); process.exit( 1 ); }
+// 			if ( latest.length < 1 ) { console.log( "Nothing New" ); process.exit( 1 ); }
 
-			db.self[ "twitter_self_latest_id" ] = latest[ 0 ][ "local_id" ];
-			db.self[ "twitter_self_timeline_latest" ] = latest;
-			db.save();
-			console.log( pretty( db.self[ "twitter_self_timeline_latest" ] ) );
-			latest = latest.reverse();
-			for ( let i = 0; i < latest.length; ++i ) {
-				await MastodonPostStatus( latest[ i ].formated_status );
-				await sleep( 1000 );
-			}
-			resolve();
-			return;
-		}
-		catch( error ) { console.log( error ); reject( error ); return; }
-	});
-}
+// 			db.self[ "twitter_self_latest_id" ] = latest[ 0 ][ "local_id" ];
+// 			db.self[ "twitter_self_timeline_latest" ] = latest;
+// 			db.save();
+// 			console.log( pretty( db.self[ "twitter_self_timeline_latest" ] ) );
+// 			latest = latest.reverse();
+// 			for ( let i = 0; i < latest.length; ++i ) {
+// 				await MastodonPostStatus( latest[ i ].formated_status );
+// 				await sleep( 1000 );
+// 			}
+// 			resolve();
+// 			return;
+// 		}
+// 		catch( error ) { console.log( error ); reject( error ); return; }
+// 	});
+// }
 
 ( async ()=> {
-	await TASK_Perform_Twitter_Self_Timeline_Sync();
+
+	const db = new JFODB( "twitter_" + Personal.twitter.username + "_mastodon_sync" );
+
+	mastodon = new Masto( Personal.mastodon.creds );
+	await sleep( 2000 );
+	twitter = new Twitter( Personal.twitter.creds );
+
+	setInterval( async function() {
+		db.self[ "twitter_self_timeline_latest" ] = [];
+		let latest = await TwitterGetLatest( Personal.twitter.username , db.self[ "twitter_self_latest_id" ] || false );
+		if ( !latest ) { console.log( "Nothing New" ); process.exit( 1 ); }
+		if ( latest.length < 1 ) { console.log( "Nothing New" ); process.exit( 1 ); }
+
+		db.self[ "twitter_self_latest_id" ] = latest[ 0 ][ "local_id" ];
+		db.self[ "twitter_self_timeline_latest" ] = latest;
+		db.save();
+		console.log( pretty( db.self[ "twitter_self_timeline_latest" ] ) );
+		latest = latest.reverse();
+		for ( let i = 0; i < latest.length; ++i ) {
+			await MastodonPostStatus( latest[ i ].formated_status );
+			await sleep( 1000 );
+		}
+	} , 30000 );
+
 })();
