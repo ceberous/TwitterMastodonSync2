@@ -44,7 +44,7 @@ let PersonalFilePath
 let Personal = null
 
 try{
-	PersonalFilePath = path.join( process.env.HOME , ".config" , "personal" , "twitter_mastodon_sync.js" );
+	PersonalFilePath = path.join( process.env.HOME , ".config" , "personal" , "twitter_mastodon_sync_2.js" );
 	console.log( PersonalFilePath );
 	Personal = require( PersonalFilePath );
 }
