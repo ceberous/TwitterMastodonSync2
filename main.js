@@ -40,7 +40,7 @@ process.on( "uncaughtException" , function( err ) {
 
 let mastodon = null;
 let twitter = null;
-let PersonalFilePath
+let PersonalFilePath = null;
 let Personal = null
 
 try{
