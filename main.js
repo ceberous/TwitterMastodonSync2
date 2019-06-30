@@ -233,10 +233,10 @@ function TASK_Perform_Twitter_Self_Timeline_Sync() {
 			db.save();
 			//console.log( pretty( db.self[ "twitter_self_timeline_latest" ] ) );
 			latest = latest.reverse();
-			for ( let i = 0; i < latest.length; ++i ) {
-				await MastodonPostStatus( latest[ i ].formated_status );
-				await sleep( 1000 );
-			}
+			// for ( let i = 0; i < latest.length; ++i ) {
+			// 	await MastodonPostStatus( latest[ i ].formated_status );
+			// 	await sleep( 1000 );
+			// }
 			resolve();
 			return;
 		}
