@@ -224,10 +224,10 @@ function MastodonPostStatus( status ) {
 	twitter = new Twitter( Personal.twitter.creds );
 
 	setInterval( async function() {
-		db.self[ "twitter_self_timeline_latest" ] = [];
 		let latest = await TwitterGetLatest( Personal.twitter.username , db.self[ "twitter_self_latest_id" ] || false );
 		if ( !latest ) { console.log( "Nothing New" ); process.exit( 1 ); }
 		if ( latest.length < 1 ) { console.log( "Nothing New" ); process.exit( 1 ); }
+		db.self[ "twitter_self_timeline_latest" ] = [];
 		db.self[ "twitter_self_timeline_latest" ] = latest;
 		db.save();
 
