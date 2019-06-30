@@ -228,15 +228,16 @@ function MastodonPostStatus( status ) {
 		let latest = await TwitterGetLatest( Personal.twitter.username , db.self[ "twitter_self_latest_id" ] || false );
 		if ( !latest ) { console.log( "Nothing New" ); process.exit( 1 ); }
 		if ( latest.length < 1 ) { console.log( "Nothing New" ); process.exit( 1 ); }
-
-		db.self[ "twitter_self_latest_id" ] = latest[ 0 ][ "local_id" ];
 		db.self[ "twitter_self_timeline_latest" ] = latest;
 		db.save();
+
 		console.log( pretty( db.self[ "twitter_self_timeline_latest" ] ) );
 		latest = latest.reverse();
 		for ( let i = 0; i < latest.length; ++i ) {
 			await MastodonPostStatus( latest[ i ].formated_status );
-			await sleep( 1000 );
+			db.self[ "twitter_self_latest_id" ] = latest[ i ][ "local_id" ];
+			db.save();
+			await sleep( 500 );
 		}
 	} , 30000 );
 
