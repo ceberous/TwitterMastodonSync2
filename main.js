@@ -238,6 +238,6 @@ function MastodonPostStatus( status ) {
 			await MastodonPostStatus( latest[ i ].formated_status );
 			await sleep( 1000 );
 		}
-	} , 180000 );
+	} , 30000 );
 
 })();
