@@ -92,7 +92,7 @@ function TwitterFormatStatuses( tweet_objs ) {
 	let final = [];
 	for ( let i = 0; i < tweet_objs.length; ++i ) {
 		let html_free = escape_html( tweet_objs[ i ].text );
-		let include_status_link = false;
+		let include_status_link = true;
 		if ( html_free.indexOf( "/video/1") > -1 ) { include_status_link = false; }
 		if ( html_free.indexOf( "/photo/1") > -1 ) { include_status_link = false; }
 		if ( !include_status_link ) {
@@ -164,7 +164,7 @@ function TwitterParseLatest( tweets ) {
 				created_at: final_created_at ,
 				text: final_text ,
 			}
-			if ( final_id ) { obj.url = final_url; }
+			if ( final_url ) { obj.url = final_url; }
 			results.push( obj );
 		}
 		return results;
